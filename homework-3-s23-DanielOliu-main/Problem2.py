@@ -1,6 +1,6 @@
 import scipy.stats as stats
 import numpy as np
-
+import math as m
 
 def get_data(filename):
     return np.loadtxt(filename)
@@ -13,7 +13,13 @@ def get_coordinates(data, each_dist):
     :return: np.ndarray, np.ndarray
     """
     # Your code starts here...
-    pass
+    coordinates = stats.probplot(data, (), each_dist)
+    calc_cords = coordinates[0]
+
+    x = calc_cords[0]
+    y = calc_cords[1]
+
+    return(x,y)
 
 
 def calculate_distance(x, y):
@@ -24,7 +30,8 @@ def calculate_distance(x, y):
     :return: float
     """
     # Your code starts here...
-    pass
+    distance = m.sqrt(((x - ((x + y) / 2)) ** 2) + ((y - ((x + y ) / 2)) ** 2))
+    return(distance)
 
 
 def find_dist(sum_err, dists):
@@ -34,7 +41,13 @@ def find_dist(sum_err, dists):
     :return: float, str
     """
     # Your code starts here...
-    pass
+    min_error = min(sum_err)
+    min_err_index = sum_err.index(min_error)
+
+    dists = dists[min_err_index]
+    output = tuple([dists, min_error])
+
+    return(output)
 
 
 def main(data_file):

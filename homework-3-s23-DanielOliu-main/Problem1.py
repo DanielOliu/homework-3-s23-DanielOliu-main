@@ -13,16 +13,14 @@ def norm_histogram(hist):
 
     prob = {}
 
-    a = np.array(hist)
-
-    probability = a / samples
+    normalized_list = [0] * len(hist)
 
     k = 0
     while k < len(hist):
     
-        prob[hist[k]] = (hist[k], probability[k]) 
+        normalized_list[k] = hist[k] / samples 
         k += 1
-
+    prob = ([normalized_list, samples])
     print(prob)
 
 
@@ -37,11 +35,17 @@ def compute_j(histo, width):
     # please delete the "pass" below and your code starts here...
     
     m = sum(histo)
-    output = norm_histogram(histo)
-    
-    for i in histo: 
-    
-        j = (2/((m-1) * width)) - ((m+1)/((m-1) * width)) * output[i]
+    output = norm_histogram(histo) 
+    probabilities = output[0] #probabilities 
+    counts = output[1] #counts
+    i = 0 #index variable 
+    p = 0 #variable for ISE equation 
+
+    while i < len(output):
+        p += (probabilities[i] ** 2)
+        i += 1
+        
+    j = float((2/((counts - 1) * width)) - ((counts + 1)/((counts - 1) * width)) * p[i])
     
     return(j)
 
@@ -68,14 +72,17 @@ def sweep_n(data, minimum, maximum, min_bins, max_bins):
     :return: list
     """
     # please delete the "pass" below and your code starts here...
-    range = max_bins - min_bins 
-    data_processed = plt.hist(data)
-    number_of_bins = compute_j(range, data_processed)
 
-    k = 0
-    
-    while k < len(number_of_bins):
-        return(number_of_bins[k])
+    i = 0 #index variable
+    j_list = []
+
+    while min_bins < max_bins:
+        j_list[i] = compute_j(plt.hist(data,min_bins,(maximum, minimum))[0], (maximum-minimum)[0], (maximum-minimum)/min_bins)
+        min_bins += 1
+        i += 1
+
+    return (j_list)
+
 
 
 
